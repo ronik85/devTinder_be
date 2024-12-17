@@ -71,9 +71,8 @@ app.patch("/user", async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {
       returnDocument: "after",
-      runValidators: true,
+      runValidators: true, // this will check the validation which is therer on the schema defination when it is updated
     });
-    console.log(user);
     res.send("User updated successfully");
   } catch (err) {
     res.status(400).send("UPDATE FAILED:" + err.message);
