@@ -4,22 +4,16 @@ const { userAuth } = require("../middlewares/Auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 
-const USER_SAFE_DATA = "firstName lastName age gender skills";
+const USER_SAFE_DATA = "firstName lastName age gender skills photoUrl";
 
-userRouter.get("/user/requests/recieved", userAuth, async (req, res) => {
+userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
 
     const connectionRequest = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
       status: "interested",
-    }).populate("fromUserId", [
-      "firstName",
-      "lastName",
-      "age",
-      "gender",
-      "skills",
-    ]);
+    }).populate("fromUserId", USER_SAFE_DATA);
 
     return res.json({
       message: "Data fetched successfully",
@@ -63,8 +57,8 @@ userRouter.get("/feed", userAuth, async (req, res) => {
     const loggedInUser = req.user;
 
     const page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 10; 
-    
+    let limit = parseInt(req.query.limit) || 10;
+
     limit = limit > 50 ? 50 : limit;
     const skip = (page - 1) * limit;
 
